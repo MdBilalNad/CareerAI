@@ -6,17 +6,17 @@ from app.routes.roadmap import router as roadmap_router
 from app.routes.interview import router as interview_router
 from app.routes.projects import router as projects_router
 
-app = FastAPI(title="AI College Success Platform")
+app = FastAPI(title="CareerAI Platform")
 
+# Allow all origins for production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],  # Allow all for now, restrict later
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include all routers
 app.include_router(resume_router, prefix="/api/resume", tags=["Resume"])
 app.include_router(roadmap_router, prefix="/api/roadmap", tags=["Roadmap"])
 app.include_router(interview_router, prefix="/api/interview", tags=["Interview"])
@@ -24,4 +24,4 @@ app.include_router(projects_router, prefix="/api/projects", tags=["Projects"])
 
 @app.get("/")
 def home():
-    return {"message": "AI College Success Platform API", "version": "1.0"}
+    return {"message": "CareerAI API is running", "version": "1.0"}
