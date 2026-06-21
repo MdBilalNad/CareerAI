@@ -1,4 +1,3 @@
-from groq import Groq
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -6,11 +5,19 @@ from dotenv import load_dotenv
 env_path = Path(__file__).parent.parent.parent / '.env'
 load_dotenv(dotenv_path=env_path, override=True)
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+_client = None
+
+def get_client():
+    global _client
+    if _client is None:
+        from groq import Groq
+        _client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+    return _client
 
 def get_ai_response(prompt, temperature=0.7, max_tokens=2000):
     """Helper function to get AI response from Groq"""
     try:
+        client = get_client()
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": prompt}],
