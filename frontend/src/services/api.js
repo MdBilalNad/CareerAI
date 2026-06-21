@@ -1,43 +1,50 @@
-const API_BASE = 'https://careerai-api.onrender.com';   // We'll update this later
+const API_BASE = 'https://careerai-api.onrender.com';
+
+async function fetchWithRetry(url, options, retries = 2) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(url, options);
+      return res.json();
+    } catch (e) {
+      if (i === retries - 1) throw e;
+      await new Promise(r => setTimeout(r, 10000)); // Wait 10s
+    }
+  }
+}
 
 export const api = {
   analyzeResume: async (formData) => {
-    const res = await fetch(`${API_BASE}/api/resume/analyze`, {
+    return fetchWithRetry(`${API_BASE}/api/resume/analyze`, {
       method: 'POST',
       body: formData,
     });
-    return res.json();
   },
   generateRoadmap: async (career, currentSkills, experienceLevel) => {
-    const res = await fetch(`${API_BASE}/api/roadmap/generate`, {
+    return fetchWithRetry(`${API_BASE}/api/roadmap/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ career, current_skills: currentSkills, experience_level: experienceLevel }),
     });
-    return res.json();
   },
   getInterviewQuestions: async (role, difficulty, topic) => {
-    const res = await fetch(`${API_BASE}/api/interview/questions`, {
+    return fetchWithRetry(`${API_BASE}/api/interview/questions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role, difficulty, topic }),
     });
-    return res.json();
   },
   evaluateAnswer: async (question, answer, role) => {
-    const res = await fetch(`${API_BASE}/api/interview/evaluate`, {
+    return fetchWithRetry(`${API_BASE}/api/interview/evaluate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question, answer, role }),
     });
-    return res.json();
   },
   suggestProjects: async (skills, difficulty) => {
-    const res = await fetch(`${API_BASE}/api/projects/suggest`, {
+    return fetchWithRetry(`${API_BASE}/api/projects/suggest`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ skills, difficulty }),
     });
-    return res.json();
   }
 };
