@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://careerai-api.onrender.com'; // We'll update this later
 
 export const api = {
   analyzeResume: async (formData) => {
